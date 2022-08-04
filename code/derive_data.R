@@ -1,6 +1,8 @@
-# MappingDirect
-# Data derivation
-# 2022 Katrin Petermann
+#######################################################
+### Deep Brain Stimulation: When to go directional.
+### Data Derivations
+### 2022 Katrin Petermann
+#######################################################
 
 derivedata <- function(dd){
   # calculating derivations for best contact, therapeutic window and efficacy

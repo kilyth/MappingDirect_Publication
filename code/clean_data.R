@@ -1,6 +1,8 @@
-# MappingDirect
-# Data cleaning
-# 2022 Katrin Petermann
+#######################################################
+### Deep Brain Stimulation: When to go directional.
+### Data Cleaning
+### 2022 Katrin Petermann
+#######################################################
 
 cleandata <- function(dd){
   # cleaning up the original input file

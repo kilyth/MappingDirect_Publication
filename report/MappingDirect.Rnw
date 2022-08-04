@@ -17,13 +17,12 @@
 % Personalized layout
 \newcommand{\name}{Katrin Petermann}
 \newcommand{\academictitles}{dipl.Ing, MSc}
-% \newcommand{\mail}{\href{mailto:katrin.petermann@insel.ch}{katrin.petermann@insel.ch}}
 \newcommand{\mail}{katrin.petermann@insel.ch}
 \newcommand{\versiondate}{\today}
-% \newcommand{\client}{$<$Client Name$>$} % umlaute: \"a = ä
-% \newcommand{\clinic}{$<$Clinic Name$>$} % umlaute: \"a = ä, specify precisely, not just USZ 
-% \newcommand{\supervisor}{$<$Supervisor Name$>$} % umlaute: \"a = ä
-\newcommand{\projecttitle}{Predicting the Benefit of Current Steering in Subthalamic Deep Brain Stimulation in Parkinson's Disease}
+% \newcommand{\client}{$<$Client Name$>$} 
+% \newcommand{\clinic}{$<$Clinic Name$>$} 
+% \newcommand{\supervisor}{$<$Supervisor Name$>$} 
+\newcommand{\projecttitle}{Deep Brain Stimulation: \\when to go directional?}
 \newcommand{\subtitle}{}
 
 % =======================================
@@ -39,7 +38,7 @@
 
 % =======================================
 % bibliography
-\bibliographystyle{abbrv}
+\bibliographystyle{custombib}
 
 % path to figures
 \graphicspath{{../figures}}
@@ -68,8 +67,11 @@ opts_chunk$set(
 \newcommand{\prog}[1]{\textsf{#1}}
 \newcommand{\pkg}[1]{\texttt{#1}}
 \newcommand{\TW}{\emph{Therapeutic Window }}
+\newcommand{\TWs}{\emph{Therapeutic Windows }}
 \newcommand{\ET}{\emph{Effect Threshold }}
+\newcommand{\ETs}{\emph{Effect Thresholds }}
 \newcommand{\SET}{\emph{Side Effect Threshold }}
+\newcommand{\SETs}{\emph{Side Effect Thresholds }}
 
 \begin{document}
 \linespread{1.25}
@@ -147,26 +149,26 @@ This document was generated on \Sexpr{format(Sys.time(), "%B %d, %Y at %H:%M")}.
 <<setup, include=FALSE, eval=FALSE>>=
 ## Import external functions
 ## -------------------------
-source(file = "../code/clean_data.R")
-source(file = "../code/derive_data.R")
-
-## Import Data
-## ------------
-load(file = "../data/data_orig.RData")
-
-## Data Preparation
-## ----------------
-## cleaning up the original input file
-dd.clean <- cleandata(dd.orig)
-
-## subsetting to STN data only
-dd.clean <- subset(dd.clean, dd.clean$target == "STN")
-
-MDSTNdata <- derivedata(dd.clean)
-longData <- makeLongData(MDSTNdata)
-
-save(MDSTNdata, longData, file = "../data/mappingDirectSTN.RData")
-rm(dd.clean, dd.orig)
+# source(file = "../code/clean_data.R")
+# source(file = "../code/derive_data.R")
+# 
+# ## Import Data
+# ## ------------
+# load(file = "../data/data_orig.RData")
+# 
+# ## Data Preparation
+# ## ----------------
+# ## cleaning up the original input file
+# dd.clean <- cleandata(dd.orig)
+# 
+# ## subsetting to STN data only
+# dd.clean <- subset(dd.clean, dd.clean$target == "STN")
+# 
+# MDSTNdata <- derivedata(dd.clean)
+# longData <- makeLongData(MDSTNdata)
+# 
+# save(MDSTNdata, longData, file = "../data/mappingDirectSTN.RData")
+# rm(dd.clean, dd.orig)
 @
 
 
@@ -176,7 +178,7 @@ rm(dd.clean, dd.orig)
 load(file = "../data/mappingDirectSTN.RData")
 
 source("../code/prediction_model.R")
-source(file = "../code/figures.R")
+# source(file = "../code/figures.R")
 @
 %========End of Initial Settings for R============
 
@@ -189,29 +191,30 @@ n_contacts_TWlarger <- sum(dd$TW_larger == "yes")
 n_pat_TWlarger <- length(unique(dd$id[dd$TW_larger == "yes"]))
 @
 
+\begin{center}
 \fontsize{36pt}{36pt}\selectfont
-\center
-\textbf{Predicting the Benefit of Current Steering in Subthalamic Deep Brain Stimulation in Parkinson's Disease}
+\textbf{Deep-Brain-Stimulation: \\when to go directional?}
+\end{center}
 
 \vspace*{1.5cm}
 \begin{minipage}{\textwidth}
 \center
-\normalsize
 \renewcommand{\thefootnote}{\alph{footnote}}
 
-Debove I\footnotemark[1]{}\footnotemark[5]{}\footnotemark[6]{}, MD,  Petermann K\footnotemark[1]{}\footnotemark[5]{}, dipl.Ing. MSc, Nowacki A\footnotemark[2]{}, MD, Tinkhauser G\footnotemark[1]{}, MD PhD, Michelis JP\footnotemark[1]{}, MD, M\"{u}llner J\footnotemark[1]{}, MD, Schlaeppi JA\footnotemark[2]{}, MD, Krack P\footnotemark[1]{}, MD, Sch\"{u}pbach M\footnotemark[1]{}, MD, Pollo C\footnotemark[2]{}, MD, Lachenmayer ML\footnotemark[1]{}, MD
+Debove I\footnotemark[1]\footnotemark[6], MD,  Petermann K\footnotemark[1]\footnotemark[6], dipl.Ing. MSc, Nowacki A\footnotemark[2], MD, Nguyen TAK\footnotemark[2]\footnotemark[3], ScD, Tinkhauser G\footnotemark[1], MD PhD, Michelis JP\footnotemark[1], MD, M\"{u}llner J\footnotemark[1], MD, Amstutz D\footnotemark[1], MSc, Bargiotas P\footnotemark[4], MD, Fichtner J\footnotemark[2]\footnotemark[5], MD, Schlaeppi JA\footnotemark[2], MD, Krack P\footnotemark[1], MD, Sch\"{u}pbach M\footnotemark[1], MD, Pollo C\footnotemark[2], MD, Lachenmayer ML\footnotemark[1], MD
 
 \small
 \footnotetext[1]{Department of Neurology, Inselspital, Bern University Hospital, University of Bern, Switzerland} 
 \footnotetext[2]{Department of Neurosurgery, Inselspital, Bern University Hospital, University of Bern, Switzerland}
 \footnotetext[3]{ARTORG Center for Biomedical Engineering Research, University of Bern, Switzerland}
 \footnotetext[4]{Department of Neurology, Medical School, University of Cyprus, Nicosia, Cyprus}
-\footnotetext[5]{These authors contributed equally: Ines Debove, Katrin Petermann.}
-\footnotetext[6]{Corresponding Author}
+\footnotetext[5]{Cantonal medical service, Department of Health of the canton of Bern, Switzerland}
+\footnotetext[6]{These authors contributed equally: Ines Debove, Katrin Petermann.}
 \end{minipage}
 \vspace*{1.5cm}
 
-\small\flushleft
+\begin{flushleft}
+\small
 \textbf{Corresponding Author:}\\
 Ines Debove, MD\\
 Department of Neurology\\
@@ -221,25 +224,7 @@ Freiburgstrasse 10\\
 3010 Bern, Switzerland\\
 Phone: +41 31 632 21 11\\
 Fax: +41 31 632 03 21\\
-E-mail: ines.debove@insel.ch\\
-
-\pagebreak
-% =======================================
-\section*{Abstract} \label{sec:abstract}
-% =======================================
-\textbf{Background:} Directional deep brain stimulation (DBS) allows for steering of the stimulation field. Currently, it is unclear which patients profit from directional current steering. \\[0.2cm]
-\textbf{Objective/Hypothesis:} The goal of the study was to investigate in a standardized, systematic manner whether directional DBS of the STN provides an increased \TW, and to predict which contacts should be selected for directional testing. \\[0.2cm]
-\textbf{Methods:} 52 Parkinson's disease (PD) patients implanted in the subthalamic nucleus (STN) with a directional DBS system (Boston Scientific model DB-2202) underwent a standardized programming session 5-9 months after implantation. The recorded \ET, \SET and \TW were tested for potential benefit of current steering and used to build a prediction model for the selection of the contacts profiting from horizontal steering. \\[0.2cm]
-\textbf{Results:} According to our standardized protocol, \Sexpr{round(100 * n_pat_TWlarger / n_pat_analysis, 0)}\% of patients had a larger \TW on directional stimulation compared to ring-mode, whereas on average no difference in \TW between ring-level and best directional contact was noticed. We were able to predict which contacts should be retested in a directional manner with a sensitivity of \Sexpr{round(100 * sens$p, 0)}\% and a specificity of \Sexpr{round(100 * spec$p, 0)}\%.\\[0.2cm]
-\textbf{Conclusion:} Our results confirm the directionality of the system. According to our analysis, additional directional testing should be done in ring-level contacts with a \TW <2.0mA.
-
-\pagebreak
-
-% =======================================
-\section*{Introduction} \label{sec:introduction}
-% =======================================
-DBS of the STN is an effective treatment for levodopa-responsive PD with motor complications \cite{deuschl2006randomized, kleiner2006subthalamic}. However, the efficacy of STN-DBS may be limited by stimulation-induced side effects that emerge when the volume of tissue activated expands into adjacent structures \cite{baizabal2016movement, maks2009deep}.\\
-Directional electrodes represent a technical innovation in DBS, as these contacts allow for a directional alignment of the stimulation field \cite{contarino2014directional, pollo2014directional}, while conventional DBS systems with cylindrical ring contacts generate a concentric stimulation field \cite{madler2012explaining}. Postoperative pilot STN-DBS studies and a prospective postmarket study in PD patients have shown that directional stimulation can expand the therapeutic window of stimulation \cite{dembek2017directional, steigerwald2016directional, schnitzler2022directional}. However, identifying and exploiting the advantages of steering would require the testing of every possible configuration of stimulation parameters of the segmented contacts of different levels. Since in clinical practice this is not possible due to the overwhelming number of existing possibilities \cite{tinkhauser2018directional, horn2017toward} and limited time resources, and moreover, directional stimulation does not offer advantages in all cases, we retrospectively analyzed standard monopolar contact reviews in PD patients with directional DBS leads in the STN to determine in which cases directional stimulation can offer a relevant extension of the therapeutic window. \\[1cm]
+E-mail: \href{mailto:ines.debove@insel.ch}{ines.debove@insel.ch}\\[1.5cm]
 
 \textbf{\textit{Keywords:}}\\
 Parkinson's disease\\
@@ -247,36 +232,62 @@ Subthalamic nucleus\\
 Deep Brain Stimulation\\ 
 Directional electrodes\\
 Current Steering\\
+\end{flushleft}
+
+\pagebreak
+% =======================================
+\section*{Abstract} \label{sec:abstract}
+% =======================================
+\textbf{Background:} Directional deep brain stimulation (DBS) allows for steering of the stimulation field, but it is currently unclear in which cases directional current steering might offer an advantage. Furthermore, extensive and time--consuming testing of all segmented contacts is necessary to identify the possible benefit of steering. 
+\\[0.2cm]
+\textbf{Objective:} The goal of the study was to investigate in a standardized, systematic manner whether directional DBS of the subthalamic nucleus (STN) provides an increased \TW compared to ring level stimulation and to predict which contacts should be selected for directional testing.
+ \\[0.2cm]
+\textbf{Methods:} 52 Parkinson's disease patients implanted in the STN with a directional DBS system (Boston Scientific model DB-2202) underwent a standardized monopolar programming session 5-9 months after implantation. Individual contacts were tested for a potential advantage of directional stimulation. Subsequently obtained results were used to build a prediction model for the selection of ring levels that would benefit from directional stimulation. \\[0.2cm]
+\textbf{Results:} According to our standardized protocol, \Sexpr{round(100 * n_contacts_TWlarger / n_contacts_analysis, 0)}\% of the contacts and \Sexpr{round(100 * n_pat_TWlarger / n_pat_analysis, 0)}\% of patients had a larger \TW on directional stimulation compared to ring-mode, whereas on average no difference in \TW between ring-level and best directional contact could be determined.  The segmented contacts that should further be explored could be predicted with a sensitivity of \Sexpr{round(100 * sens$p, 0)}\% and a specificity of \Sexpr{round(100 * spec$p, 0)}\%.\\[0.2cm]
+\textbf{Discussion:} According to our analysis, we recommend performing additional directional testing in ring-level contacts with a \TW of less than 2.0 mA. Using this algorithm, the time spent on DBS programming can be significantly reduced.
+
+
+\pagebreak
+
+% =======================================
+\section*{Introduction} \label{sec:introduction}
+% =======================================
+Deep brain stimulation (DBS) of the subthalamic nucleus (STN) is an effective treatment for levodopa--responsive Parkinson's disease (PD) with motor complications \citep{deuschl2006randomized, kleiner2006subthalamic}. However, the efficacy of STN-DBS may be limited by stimulation--induced side effects that emerge when the current spreads into adjacent, undesired  structures \citep{baizabal2016movement, maks2009deep}.\\
+Directional electrodes represent a technical innovation in DBS, as their segmented contacts allow for a spatially more refined shaping of the stimulation field \citep{contarino2014directional, pollo2014directional}, while conventional DBS systems with cylindrical ring contacts generate a concentric stimulation field \citep{madler2012explaining}. Postoperative pilot STN-DBS studies and a prospective postmarket study in PD patients have shown that directional stimulation can increase the \TW of stimulation \citep{dembek2017directional, steigerwald2016directional, schnitzler2022directional}. However, identifying and exploiting the advantages of steering would require the testing of every possible configuration of stimulation parameters of the segmented contacts of different levels.\\
+This is not possible in clinical practice due to the overwhelming number of existing options \citep{tinkhauser2018directional, horn2017toward} and limited time resources. It remains unclear in which specific circumstances directional stimulation can provide advantages \citep{Kramme2021}. Therefore, we retrospectively analyzed standard monopolar contact reviews in PD patients implanted with directional DBS leads in the STN to determine in which cases directional stimulation can offer a relevant increase of the \TW. \\[1cm]
 
 % =======================================
 \section*{Material and Methods} \label{sec:methods}
 % =======================================
 
 \subsection*{Patients}
-Our consecutive cohort comprises \Sexpr{n_pat_initial} PD patients from the University Hospital of Berne, Switzerland for whom a general consent has been obtained. We included every patient who underwent bilateral STN-DBS surgery between 2015 and 2018, all of them implanted with a directional lead (Boston Scientific DB-2202, Marlborough, MA, USA). The lead includes tripartite directional contacts on the two middle levels, while the distal and proximal levels are conventional ring contacts. The selection criteria for neurosurgery and surgical procedures have been described previously.\\
-Ethics approval KEK-BE: 287/2015
+We included every patient who underwent bilateral STN--DBS surgery between 2015 and 2018 in the University Hospital of Berne, Switzerland and who provided general informed consent. The study was approved by the local ethics committee (Ethics approval KEK-BE: 287/2015). All patients were implanted with a directional lead (Boston Scientific DB-2202, Marlborough, MA, USA). The lead includes tripartite directional contacts on the two middle levels, while the distal and proximal levels are conventional ring contacts (Supplementary figure 1). The selection criteria for neurosurgery and surgical procedures have been described previously \citep{pollo2014directional}.
 
 \subsection*{Stimulation programming / testing}
-\Sexpr{round(min(MDSTNdata$time.after.surgery/4), 0)}--\Sexpr{round(max(MDSTNdata$time.after.surgery/4), 0)} months (\Sexpr{round(mean(MDSTNdata$time.after.surgery), 0)} $\pm$ \Sexpr{round(sd(MDSTNdata$time.after.surgery), 0)} weeks) after implantation, patients underwent a programming session following the procedure of a standard monopolar contact review \cite{steigerwald2016directional, Volkmann2006} in a defined medication OFF-state (>12 hours of L-DOPA and >48 hours of dopamine agonists withdrawal). Assessments were performed by one of five trained raters. Rigidity and side effects were assessed by increasing stimulation amplitude in 0.5mA steps, starting from 1.0mA and up to a maximum of 8.0mA, with fixed frequency and pulse width (130Hz, 60\textmu s). \ET (ET), \SET (SET) and \TW (TW) were documented for each ring-level and all directional contacts in a standardized manner.\\
-\ET was defined as the lowest stimulation amplitude in mA, at which the best clinical effect on rigidity was observed during the programming session. In case there was no rigidity detectable at baseline, the hemisphere was removed from analysis.\\
-\SET was defined as the stimulation amplitude in mA, at which a clinically limiting stimulation-induced side effect occurred due to current spreading into adjacent structures like pyramidal contractions \cite{baizabal2016movement, Shields2007}.\\
-\TW was defined as the difference between \ET and \SET ($TW=SET-ET$). If the \SET occurred before the \ET, \TW was set to 0.
+A standardized monopolar contact review \citep{steigerwald2016directional, Volkmann2006} was performed \Sexpr{round(min(MDSTNdata$time.after.surgery/4), 0)}--\Sexpr{round(max(MDSTNdata$time.after.surgery/4), 0)} months (\Sexpr{round(mean(MDSTNdata$time.after.surgery), 0)} $\pm$ \Sexpr{round(sd(MDSTNdata$time.after.surgery), 0)} weeks) after implantation. The programming session was conducted in a defined medication OFF--state (>12 hours of L-DOPA and >48 hours of dopamine agonists withdrawal). Assessments were performed by one of five trained raters. Rigidity was assessed according to the MDS-UPDRS-III scale. Effect- and side-effect thresholds were evaluated by increasing stimulation amplitude in 0.5mA steps, starting from 1mA and up to a maximum of 8mA, with fixed frequency and pulse width (130Hz, 60\textmu s). \ET, \SET and \TW were documented for each ring-level and all directional contacts in a standardized manner.\\
+\ET was defined as the lowest stimulation amplitude in mA, at which the best clinical effect on rigidity was observed. In case there was no rigidity detectable at baseline, the hemisphere was removed from the analysis.\\
+\SET was defined as the stimulation amplitude in mA, at which a clinically limiting stimulation-induced side effect occurred due to current spreading into adjacent structures like pyramidal contractions \citep{baizabal2016movement, Shields2007}.\\
+\TW was defined as the difference between \SET and \ET ($TW=SET-ET$). If the \SET occurred before the \ET, \TW was set to 0.\\
+The Excel template used for standardized contact testing can be found in supplementary material.
 
 
 \subsection*{Statistical Analysis}
 Automated contact rating and statistical analysis were performed using \Sexpr{version$version.string} \citep{R}. The code for all analyses can be found on GitHub \url{https://github.com/kilyth/MappingDirect_Publication}.\\
 \textbf{Analysis of Monopolar Reviews:}\\
-Left and right hemispheres in the same patient were assumed to be independent. Differences in stimulation amplitude were tested with a linear mixed-effects model (random intercepts) where the hemisphere was considered as random effect. 95\% confidence intervals were computed with profile likelihood and p-values with the Satterthwaite approximation.\\
+Left and right hemispheres in the same patient were assumed to be independent. Differences in stimulation amplitude were tested with a linear mixed-effects model (random intercepts) where the hemisphere was considered as random effect. 95\% confidence intervals were computed with profile likelihood and $P$-values with the Satterthwaite approximation.\\
 \textbf{Prediction Model:} \\
-We compared \TW of ring level and corresponding directional stimulation. Contacts with an increase in \TW of at least 25\% were labeled as \emph{worth to be tested}. \ET, \SET and \TW of the ring level were considered as possible predictors if a contact should be tested in directional mode. ROC curves of the complete dataset were compared using the paired bootstrap method from the R package \prog{pROC} \citep{pROC}. 95\% percentile bootstrap confidence intervals for ROC curves were calculated using 2000 stratified replicates. To test the predictive performance of our approach we used a 5-fold cross-validation, where each contact was part of the test fold exactly once. With the data in the training folds, we calculated ROC curves for each predictor and chose a threshold such that the sensitivity was at least 75\%. This threshold was then used to predict the label of the contacts in the test fold. The results of all test folds were combined to calculate overall Sensitivity, Specificity and Accuracy measures and their 95\% confidence intervals. \\
+We compared \TW of ring level and corresponding directional stimulation. Contacts with an increase in \TW of at least 25\% were labeled as ''\emph{worth testing}''. \ET, \SET and \TW of the ring level were considered as possible predictors if a contact should be tested in directional mode. ROC curves of the complete dataset were compared using the paired bootstrap method from the R package \prog{pROC} \citep{pROC}. 95\% percentile bootstrap confidence intervals for ROC curves were calculated using 2000 stratified replicates. To test the predictive performance of our approach we used a 5-fold cross-validation, where each contact was part of the test fold exactly once. With the data in the training folds, we calculated ROC curves for each predictor and chose a threshold such that the sensitivity was at least 75\%. This threshold was then used to predict the label of the contacts in the test fold. The results of all test folds were combined to calculate overall Sensitivity, Specificity and Accuracy measures and their 95\% Wilson confidence intervals.\\
 
+\clearpage
 
 % =======================================
 \section*{Results} \label{sec:results}
 % =======================================
 
 \subsection*{Patients}
-Preoperative patient characteristics are shown in table \ref{tab:1}.
+Our consecutive cohort comprises \Sexpr{n_pat_initial} PD patients. Preoperative patient characteristics are shown in table \ref{tab:1}.\\
+The monopolar review could not be done in 11 out of \Sexpr{n_contacts_initial} ring levels: 3 levels (2 patients) testing not finished because of fatigue, 4 levels (1 patient) due to oppositional paratonia ("Gegenhalten"), 2 levels (1 patient) because stimulation could not be turned off due to unbearable muscle cramps in OFF-state, 2 levels (1 patient) because of pain in the wrist. An additional 44 ring levels from 22 patients were removed from analysis because of no rigidity at baseline. The analysis was done on a total of \Sexpr{n_pat_analysis} patients and \Sexpr{n_contacts_analysis} contacts.\\
+
 % Table One
 % -----
 
@@ -329,31 +340,30 @@ print(xtable(tab_one), only.contents = TRUE, include.colnames = FALSE,
 \end{figure}
 
 \subsection*{Monopolar Review}
-
-The monopolar review could not be done in 11 out of \Sexpr{n_contacts_initial} ring levels: 3 contacts (2 Patients) testing not finished because of fatigue, 4 contacts (1 Patient) because of Gegenhalten, 2 contacts (1 Patient) because stimulation could not be turned off due to unbearable muscle cramps in OFF-state, 2 contacts (1 patient) because of pain in the wrist. An additional 44 ring levels from 22 Patients were removed from analysis because of no rigidity at baseline. The analysis was done on a total of \Sexpr{n_pat_analysis} Patients and \Sexpr{n_contacts_analysis} contacts.\\
-We compared the stimulation amplitudes for \ET, \SET and \TW from each ring level to the corresponding segmented contacts. The difference in \TW between the ring levels and the directional contacts is shown in Figure \ref{fig:TW_diff}. We see a clear difference in \TW between the three segments, however on average the \TW is not larger on the best directional contact when compared to ring level. Even so, \Sexpr{n_contacts_TWlarger} out of \Sexpr{n_contacts_analysis} ring levels (\Sexpr{round(100*n_contacts_TWlarger/n_contacts_analysis, 0)}\%) in \Sexpr{n_pat_TWlarger} out of \Sexpr{n_pat_analysis} patients (\Sexpr{round(100*n_pat_TWlarger/n_pat_analysis, 0)}\%) had a larger TW on the best directional contact.
+We compared the stimulation amplitudes for \ET, \SET and \TW from each ring level to the corresponding segmented contacts. The difference in \TW between the ring levels and the directional contacts is shown in Figure \ref{fig:TW_diff}. We saw clear differences in the \TW between the segments. However, on average the \TW of the best directional contact was not larger than the \TW of the corresponding ring level. \Sexpr{n_contacts_TWlarger} out of \Sexpr{n_contacts_analysis} ring levels (\Sexpr{round(100*n_contacts_TWlarger/n_contacts_analysis, 0)}\%) in \Sexpr{n_pat_TWlarger} out of \Sexpr{n_pat_analysis} patients (\Sexpr{round(100*n_pat_TWlarger/n_pat_analysis, 0)}\%) had a larger TW on the best directional contact. 
 
 
 \begin{figure}
 
 \centering
 \includegraphics[width = \textwidth]{fig_1.pdf}
-\caption{Differences in \TW between ring level and corresponding directional contacts. Each point corresponds to the test results of a single contact. Matching boxplots and distributions are shown to the left and right of the data points. The shaded area highlights all the contacts that are labeled as worth to be tested.
+\caption{Differences in \TW between ring level and corresponding directional contacts. Each point corresponds to the test results of a single contact. Matching boxplots and distributions are shown to the left and right of the data points. The shaded area highlights all the contacts that are labeled as ''\emph{worth testing}''. $P$-values result from the mixed effects model described in the methods.
 }
 \label{fig:TW_diff}
 \end{figure}
 
 \subsection*{Prediction Model}
-In order to identify a variable that could predict which of the directional contacts could provide a relevant increase of the \TW, the \TW of the ring level were compared with those of the corresponding directional contacts. For this, directional contacts with an increase in \TW of at least 25\% were considered to be worth testing. \ET, \SET, and \TW of the ring level were considered as possible predictors of whether a contact should be tested in the directional mode. Figure \ref{fig:levels} shows the results of the monopolar reviews divided into two categories, whether or not the directional contact was considered as worth to be tested. The aim was to find a marker capable of identifying contacts that could provide a relevant increase in the \TW with a sensitivity of at least 75\%.\\
+To identify a variable that could predict which of the directional contacts could provide a relevant increase in the \TW, the \TWs of the ring levels were compared with those of the corresponding directional contacts. For this, directional contacts with an increase in the \TW of at least 25\% were considered to be ''\emph{worth testing}'' Here, a percentage score was chosen instead of an absolute value, since the radius increase of the VTA is more important at low stimulation amplitudes than at higher amplitudes \citep{mcintyre2004electric}.\\
+\ET, \SET, and \TW of the ring level were considered as possible predictors of whether a level should be tested in the directional mode. Figure \ref{fig:levels} shows the results of the monopolar reviews divided into two categories, whether the directional contact was considered ''\emph{worth testing}''. The aim was to find a predictor capable of identifying contacts that could provide a relevant increase in the \TW with a sensitivity of at least 75\%.\\
 
-The variable with the best predictive value  was \TW with an AUC of \Sexpr{round(roc_TW$auc, 2)} (95\% CI: \Sexpr{formatCI(ci.auc(roc_TW)[c(1, 3)], text = "english")}) that was significantly higher than \ET (\Sexpr{round(roc_ET$auc, 2)}, 95\% CI: \Sexpr{formatCI(ci.auc(roc_ET)[c(1, 3)], text = "english")}, p = \Sexpr{formatPval(roc_test_TW_ET$p.value)}) and \SET (\Sexpr{round(roc_SET$auc, 2)}, 95\% CI: \Sexpr{formatCI(ci.auc(roc_SET)[c(1, 3)], text = "english")}, p = \Sexpr{formatPval(roc_test_TW_SET$p.value)}). A combination threshold of \TW and \ET was also tested, but did not lead to significantly better results than the \TW alone (\Sexpr{round(roc_TW_ET$auc, 2)}, 95\% CI: \Sexpr{formatCI(ci.auc(roc_TW_ET)[c(1, 3)], text = "english")}, p = \Sexpr{formatPval(roc_test_TW_ET_TW$p.value)}).\\
+The variable with the best predictive value was the \TW with an AUC of \Sexpr{round(roc_TW$auc, 2)} (95\% CI: \Sexpr{formatCI(ci.auc(roc_TW)[c(1, 3)], text = "english")}) that was significantly higher than \ET (\Sexpr{round(roc_ET$auc, 2)}, 95\% CI: \Sexpr{formatCI(ci.auc(roc_ET)[c(1, 3)], text = "english")}, p = \Sexpr{formatPval(roc_test_TW_ET$p.value)}) and \SET (\Sexpr{round(roc_SET$auc, 2)}, 95\% CI: \Sexpr{formatCI(ci.auc(roc_SET)[c(1, 3)], text = "english")}, p = \Sexpr{formatPval(roc_test_TW_SET$p.value)}). A combined threshold of \TW and \ET was also tested, but did not lead to significantly better results than the \TW alone (\Sexpr{round(roc_TW_ET$auc, 2)}, 95\% CI: \Sexpr{formatCI(ci.auc(roc_TW_ET)[c(1, 3)], text = "english")}, p = \Sexpr{formatPval(roc_test_TW_ET_TW$p.value)}). Figure \ref{fig:pred_cv} A shows the calculated ROC curves of the different predictors.\\
 
-We then used a 5-fold cross-validation to test the predictive performance of our approach. In each run, ROC curves for the three predictors were calculated. From these ROC curves we extracted stimulation intensities leading to a sensitivity of at least 75\% for each predicor. This stimulation intensity was then used to predict how many of the contacts in the test-fold were correctly predicted as \emph{worth to be tested}. Figure \ref{fig:pred_cv} shows the results of the 5-fold cross-validation. Interestingly the relevant threshold for \TW to reach a sensitivity of at least 75\% is the same in each fold at $\leq$1.5mA. For our data, this means, that if we retest all patients with a \TW smaller or equal to 1.5mA, we will catch the patients who profit from a directional testing with a sensitivity of \Sexpr{round(sens$p, 2)} and a specificity of \Sexpr{round(spec$p, 2)}. See Table \ref{tab:pred_res} for all results. In our data set, out of \Sexpr{n_contacts_analysis} contacts, we would have done a directional monopolar review for \Sexpr{sum(dd$TW_level < 2)} contacts. Out of these, \Sexpr{sum(dd$TW_level < 2 & dd$TW_larger == "yes")} had an increase in \TW of at least 25\%, while \Sexpr{sum(dd$TW_level < 2 & dd$TW_larger == "no")} didn't show an increase in \TW.
+We then used a 5-fold cross-validation to test the predictive performance of our approach. In each run, ROC curves for the three predictors were calculated. From these ROC curves we extracted stimulation intensities leading to a sensitivity of at least 75\% for each predicor. This stimulation intensity was then used to predict how many of the contacts in the test-fold were correctly predicted as ''\emph{worth testing}''. Figure \ref{fig:pred_cv} B shows the results of the 5-fold cross-validation. Interestingly the relevant threshold for \TW to reach a sensitivity of at least 75\% is the same in each fold at $<$2.0mA. For our data, this means, that if we retest all patients with a \TW smaller than 2.0mA, we will catch the patients who profit from a directional testing with a sensitivity of \Sexpr{round(100 * sens$p, 0)}\% (95\% CI: \Sexpr{formatCI(100 * sens$CIs[2, 2:3], digits = 0, unit = "\\%", text = "english")}) and a specificity of \Sexpr{round(100 * spec$p, 0)}\% (95\% CI: \Sexpr{formatCI(100 * spec$CIs[2, 2:3], digits = 0, unit = "\\%", text = "english")}). See Table \ref{tab:pred_res} for all results. In our data set, out of \Sexpr{n_contacts_analysis} contacts, we would have done a directional monopolar review for \Sexpr{sum(dd$TW_level < 2)} contacts. Out of these, \Sexpr{sum(dd$TW_level < 2 & dd$TW_larger == "yes")} had an increase in \TW of at least 25\%, while \Sexpr{sum(dd$TW_level < 2 & dd$TW_larger == "no")} didn't show an increase in \TW.
 
 \begin{figure}
 \centering
 \includegraphics[width = \textwidth]{fig_2.pdf}
-\caption{\ET, \SET and \TW from the \Sexpr{dim(dd)[1]} ring level monopolar reviews. Contacts are labeled as \emph{benefit from directional testing} if the directional \TW is at least 25\% larger than the corresponding ring level.}
+\caption{\ETs, \SETs and \TWs from the \Sexpr{dim(dd)[1]} ring level monopolar reviews. Contacts are labeled as \emph{benefit from directional testing} if the directional \TW is at least 25\% larger than the corresponding ring level.}
 \label{fig:levels}
 \end{figure}
 
@@ -367,19 +377,17 @@ We then used a 5-fold cross-validation to test the predictive performance of our
 % =======================================
 \section*{Discussion} \label{sec:discussion}
 % =======================================
+In clinical practice programming of directional stimulation is challenging due to the overwhelming number of existing options \citep{tinkhauser2018directional, horn2017toward} and limited time resources. With our novel statistical algorithm, we tried to determine factors that predict which ring levels are worth to be tested directionally, i.e. have a larger \TW on a directional contact compared to the ring level.\\
 
-To the best of our knowledge, despite smaller pilot studies \cite{dembek2017directional, schnitzler2022directional} as well as a recently published larger prospective postmarket study \cite{schnitzler2022directional}, this is the largest PD cohort with a standardized systematic automated rating and analysis of directional STN-DBS. Although in our study, \Sexpr{round(100 * n_pat_TWlarger / n_pat_analysis, 0)}\% of the patients (\Sexpr{n_pat_TWlarger} out of \Sexpr{n_pat_analysis}), respectively \Sexpr{round(100 * n_contacts_TWlarger / n_contacts_analysis, 0)}\% of the contacts (\Sexpr{n_contacts_TWlarger} out of \Sexpr{n_contacts_analysis}), showed a TW that was at least 25\% larger with directional stimulation compared to ring-mode stimulation, we could not confirm a systematic larger therapeutic window with directional stimulation, as described in previous studies \cite{dembek2017directional, steigerwald2016directional, schnitzler2022directional}.\\
-However, taking advantage of steering would mean to consider every possible configuration of stimulation parameters like vertical steering and combining segmented contacts of different levels. In clinical practice, this is not possible, due to the overwhelming number of existing \cite{tinkhauser2018directional, horn2017toward} possibilities and limited time resources.\\
-Limitations of our study include the unblinded clinical rating of rigidity and screening for side effect thresholds for horizontal and monopolar steering. Our analysis is based on acute patient evaluation, therefore a detailed investigation of chronic stimulation parameters and their clinical outcome is beyond the scope of the study but needs to be explored in the future.\\
-Including probabilistic sweet spots based on the spatial location of the DBS directional leads together with computed modeling of the Volume of Tissue Activated \cite{Nguyen2019, Dembek2019} or the spatial distribution of local field potentials in the beta range \cite{tinkhauser2018directional, horn2017toward} in the programming decision making, may increase the percentage of patients stimulated in a directional mode and could help to exploit the full potential of directional DBS technology.
+In order to identify contacts with an increase in the \TW of at least 25\% our prediction model suggests that ring levels with a \TW on the ring level smaller than 2.0mA should be tested directionally. Considering an increase in \TW of 25\% as clinically meaningful, might be seen as an arbitrary number. We have chosen this value based on our clinical experience. For example, increasing the stimulation amplitude from 2.0 to 2.5mA in one patient has a higher clinical relevance than increasing it from 6.0 to 6.5mA, since in areas of high stimulation amplitudes a relevant change in clinical symptoms is limited. This can be best reflected with a percentage value of this size.\\
 
+In our cohort \Sexpr{round(100 * n_pat_TWlarger / n_pat_analysis, 0)}\% of patients ((\Sexpr{n_pat_TWlarger} of \Sexpr{n_pat_analysis})) and \Sexpr{round(100 * n_contacts_TWlarger / n_contacts_analysis, 0)}\% of ring levels (\Sexpr{n_contacts_TWlarger} of \Sexpr{n_contacts_analysis}) respectively showed a  therapeutic window that was at least 25\% larger than ring-mode stimulation. However, a systematically larger \TW with directional stimulation as described in previous studies \citep{dembek2017directional, steigerwald2016directional, schnitzler2022directional} could not be confirmed. Nevertheless, to identify this potential advantage of directional stimulation, all patients in these studies needed to receive thorough testing of all directional contacts. With our algorithm and our patient cohort, only 85 out of 153 ring levels needed retesting.\\
 
-% =======================================
-\section*{Conclusion} \label{sec:conclusion}
-% =======================================
+To the best of our knowledge, despite smaller pilot studies \citep{dembek2017directional, steigerwald2016directional} as well as a recently published larger prospective postmarket study \citep{schnitzler2022directional}, this is the largest PD cohort with a standardized systematic rating and analysis of directional STN-DBS.\\
 
-Since a suboptimal position of the stimulating electrode may cause limiting side effects, and as it has been shown that patients in this situation could further benefit from directional stimulation \cite{Nguyen2019, Schupbach2017}, the technological achievement of steering electrodes should be available to all patients.\\
-With systematic and thorough analyses we confirm the potential benefit of directional versus ring-mode stimulation in terms of effect threshold, side effect threshold and therapeutic window. We could show that current steering provides acute clinical benefit in a subset of patients, in whom ring-mode stimulation is limited by side-effects related to current diffusion. These findings provide an important clinical proof of concept for the potential superiority of directional DBS-leads. Future chronic studies are needed to determine in which patients and to what extent the observed differences between ring mode and directional stimulation provide a relevant clinical benefit.
+Limitations of our study include the unblinded clinical rating of rigidity and screening for \SETs for directional monopolar stimulation. Our model is based on the acute evaluation of the \TW, which does not necessarily equate to long-term clinical benefit. For this purpose, a detailed investigation of chronic stimulation parameters and their clinical outcome should be performed which is beyond the scope of this study.\\
+
+Regarding our model, integration of probabilistic sweet spots based on the spatial location of the DBS directional leads together with computed modeling of the Volume of Tissue Activated \citep{Nguyen2019, Dembek2019} and the spatial distribution of local field potentials in the beta range \citep{tinkhauser2018directional, horn2017toward, shah2022combining}, may increase the predictive power and help to exploit the full potential of directional DBS technology.
 
 \pagebreak
 
@@ -390,7 +398,6 @@ With systematic and thorough analyses we confirm the potential benefit of direct
 \nocite{R}
 
 \bibliography{MappingDirect}
-
 
 \vfill
 
@@ -426,7 +433,8 @@ This research did not receive any specific grant from funding agencies in the pu
 \textbf{Ines Debove:} receives a research grant from Boston Scientific, as well as reimbursement of traveling from Zambon and Boston scientific, all support outside the submitted work.\\
 \textbf{Andreas Nowacki:} received travel grants from Boston scientific. He received a research grant from the Swiss Parkinson Foundation.\\
 \textbf{Thuy Anh Khoa Nguyen:} has received a grant from the Swiss National Science Foundation (project PZ00P3\_186142) and funding from the Swiss Parkinson Association.\\
-\textbf{Gerd Tinkhauser:} received project funding from the Swiss Parkinson Association.\\
+\textbf{Gerd Tinkhauser:} is funded by the Swiss National Science Foundation (project number: PZ00P3\_202166).\\
+\textbf{Jens Fichtner:} has received consultant fees from BrainLab AG, Munich, Germany.\\
 \textbf{Paul Krack:} reports grants from Swiss National Science Foundation, ROGER DE SPOELBERCH Foundation, Bertarelli Foundation, Michael J Fox Foundation, Annemarie Opprecht Foundation, Parkinson Schweiz, research grants from Boston Scientific and Aleva, lecturing fees paid to employ institution from Boston Scientific and Bial, as well as reimbursement of travel expenses to a scientific meeting by Zambon, all support outside the submitted work.\\
 \textbf{Michael Sch\"{u}pbach:} is a consultant for Medtronic. MS has received personal educational funding from Biogen and Spirig HealthCare.\\
 \textbf{Claudio Pollo:} has received consultant fees from Boston, Abbott and Medtronic. He is cofounder of Aleva Neurotherapeutics.\\
@@ -435,7 +443,7 @@ This research did not receive any specific grant from funding agencies in the pu
 % =======================================
 \section*{Acknowledgments} \label{sec:acknowledgements}
 % =======================================
-We would like to thank all the patients and the entire team of the Centre for movement disorders for their participation and support in this study. 
+We would like to thank all the patients and the entire team of the Center for movement disorders for their participation and support in this study. 
 
 \pagebreak
 \appendix

@@ -1,6 +1,8 @@
-# MappingDirect
-# Prediction Model
-# 2022 Katrin Petermann
+#######################################################
+### Deep Brain Stimulation: When to go directional.
+### Prediction Model
+### 2022 Katrin Petermann
+#######################################################
 
 
 #######################################################

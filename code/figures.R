@@ -1,6 +1,8 @@
-# MappingDirect
-# Figures
-# 2022 Katrin Petermann
+#######################################################
+### Deep Brain Stimulation: When to go directional.
+### Figures
+### 2022 Katrin Petermann
+#######################################################
 
 ## grey, green, blue, yellow, pink
 cols <- c("#677078", "#009870", "#6ca5da", "#f8cf3b", "#ea8698")
@@ -89,6 +91,8 @@ lmeTWdiff <- lmer(diffTW ~ direction + (1 | hemisphere), data = longData)
 (lmeConfint <- confint(lmeTWdiff))
 
 p_values <- summaryLmeBLTW$coefficients[2:4, "Pr(>|t|)"]
+p_stars <- paste(c("italic(P) =", "italic(P)", "italic(P)"), formatPval(p_values))
+p_stars <- 
 p_stars <- symnum(p_values, cutpoints = c(0, 0.0001, 0.001, 0.01, 0.05, 1), 
                   symbols = c("****", "***", "**", "*", "ns"))
 
@@ -109,12 +113,16 @@ plot_1 <- ggplot(data = longData[longData$direction != "ring level", ],
   geom_hline(yintercept = 0, lty = 2, col = "lightgrey")+
   scale_fill_manual(values = c("#ffa600", "#bc5090", "#003f5c"))+
   scale_color_manual(values = c("#ffa600", "#bc5090", "#003f5c"))+
-  annotate("text", x = 1:3, y = 4.5, label = p_stars) +
+  annotate("text", x = 1, y = 4.5, size = 3.5,
+           label = paste0("~italic(P)== ", round(p_values[1], 2)), 
+           parse = TRUE) +
+  annotate("text", x = 2:3, y = 4.5,  size = 3.5,
+           label = expression(paste(italic(P), " < 0.0001"))) +
   annotate("rect", xmin = 0.82, xmax = 1.35, ymin = 0.25, ymax = 4, 
            alpha = .2)+
   theme_pubr()+
   theme(legend.position = "")+
-  labs(x = "", y = expression(Delta~"Therapeutic Window [mA]"))+
+  labs(x = "", y = expression(Delta~"Therapeutic Window (mA)"))+
   scale_y_continuous(breaks = seq(-4, 4.5, by = 1), limits = c(-4, 4.5))
 
 pdf(file = "../figures/fig_1.pdf", width = 8, height = 4)
@@ -144,7 +152,7 @@ plot_2 <- ggplot(data = dd_long, aes(x = TW_larger, y = amplitude, fill = TW_lar
   facet_grid(cols = vars(measure), labeller = labeller(measure = measure.labs))+
   scale_fill_manual(values = coldef[c(1,3)])+
   scale_color_manual(values = coldef[c(1,3)])+
-  labs(x = "Benefit from directional Testing", y = "Stimulation Amplitude (mA)")+
+  labs(x = "Benefit from Directional Testing", y = "Stimulation Amplitude (mA)")+
   theme_bw()+
   theme(legend.position = "none",
         strip.background = element_rect(fill = "white"),
@@ -170,10 +178,10 @@ plot_3a <- ggroc(list(roc_ET, roc_SET, roc_TW, roc_TW_ET), size = 1)+
   grids()+
   geom_abline(slope=1, intercept = 1, linetype = "dashed", alpha=0.7, color = "grey") + 
   labs(color = "")+
-  scale_color_manual(values = coldef, 
-                     labels = c("Therapeutic Window", 
-                                "Side Effect Threshold", 
-                                "Effect Threshold", 
+  scale_color_manual(values = coldef,
+                     labels = c("Effect Threshold",
+                                "Side Effect Threshold",
+                                "Therapeutic Window",
                                 "Effect Threshold + \nTherapeutic Window"))+
   coord_equal()
 
@@ -199,10 +207,10 @@ plot_3b <- ggplot(data = results_CV, aes(x = result, y = estimate, col = measure
                 size = 1, width = 0.5)+
   lims(y = c(0, 1))+
   labs(x = "", y = "", col = "")+
-  scale_color_manual(values = coldef, 
-                     labels = c("Effect Threshold", 
-                                "Side Effect Threshold", 
-                                "Therapeutic Window", 
+  scale_color_manual(values = coldef,
+                     labels = c("Effect Threshold",
+                                "Side Effect Threshold",
+                                "Therapeutic Window",
                                 "Effect Threshold + \nTherapeutic Window"))+
   theme_pubr(legend = "right")+
   grids()

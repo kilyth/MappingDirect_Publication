@@ -18,13 +18,14 @@
 \usepackage{amsmath, amssymb}
 \usepackage{longtable}
 \usepackage{lscape}
-\usepackage{natbib}
+\usepackage[numbers, sort]{natbib}
 \usepackage{xspace}
 \usepackage{tikz}
 \usepackage{footmisc}
 \usepackage{tabularx}
 \usepackage{colortbl, xcolor}
 \usepackage{textgreek}
+% \usepackage[font=scriptsize, labelfont=bf]{caption}
 
 %% colors
 \definecolor{insel@blue}{RGB}{108,165,218}
@@ -41,7 +42,7 @@
 \renewcommand{\familydefault}{\sfdefault}
 
 % sans serif caption (added by sina)
-\usepackage[font=sf, labelfont={sf}, margin=1cm]{caption}
+\usepackage[font={sf, small}, labelfont={sf, bf}, margin=1cm]{caption}
 
 \usepackage[T1]{fontenc}
 \usepackage[latin1]{inputenc}
@@ -73,9 +74,11 @@
 %% titlepage
 \newcommand{\mytitle}{
 
-% \vspace*{1.5cm}
+\vspace*{0.5cm}
+\begin{center}
 \fontsize{32pt}{32pt}\selectfont
 \textbf{\color{insel@grey}\projecttitle}
+\end{center}
 
 \vspace*{0.5cm}
 
